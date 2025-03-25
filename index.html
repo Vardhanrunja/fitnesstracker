@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        section {
+            display: none;
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button, select {
+            margin: 10px;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Fitness Tracker</h1>
+    <nav>
+        <a onclick="showSection('home')">Home</a>
+        <a onclick="showSection('workoutPlan')">Workout Plan</a>
+        <a onclick="showSection('planner')">Workout Planner</a>
+        <a onclick="showSection('bmi')">BMI Calculator</a>
+    </nav>
+</header>
+
+<main>
+    <section id="home" style="display:block;">
+        <h2>Welcome to the Fitness Tracker</h2>
+        <p>Track your workouts</p>
+        <p>Plan your fitness routine</p>
+        <p>stay healthy!</p>
+    </section>
+
+    <section id="bmi">
+        <h2>BMI Calculator</h2>
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" placeholder="Enter weight">
+        <label for="feet">Height (feet):</label>
+        <input type="number" id="feet" placeholder="Feet">
+        <label for="inches">Height (inches):</label>
+        <input type="number" id="inches" placeholder="Inches">
+        <button onclick="calculateBMI()">Calculate BMI</button>
+        <p id="bmi-result"></p>
+    </section>
+
+    <section id="workoutPlan">
+        <h2>Weekly Workout Plan</h2>
+        <label for="day">Select Day:</label>
+        <select id="day">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+        </select>
+        <label for="exercise">Exercise:</label>
+        <input type="text" id="exercise" placeholder="Enter exercise">
+        <button onclick="addWorkoutToPlan()">Add Workout</button>
+        <button onclick="resetWorkoutPlan()">Reset Workout Plan</button>
+
+        <h3>Weekly Workout Schedule</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Exercise</th>
+                </tr>
+            </thead>
+            <tbody id="workoutPlanTable"></tbody>
+        </table>
+    </section>
+
+    <section id="planner">
+        <h2>Workout Planner</h2>
+        <label for="workout-date">Select Date:</label>
+        <input type="date" id="workout-date">
+        <label for="workout-name">Workout Name:</label>
+        <input type="text" id="workout-name" placeholder="Enter workout">
+        <label for="workout-duration">Duration (mins):</label>
+        <input type="number" id="workout-duration" placeholder="Enter duration">
+        <button onclick="addWorkoutToPlanner()">Add Workout</button>
+        <button onclick="resetWorkoutPlanner()">Reset Workout Planner</button>
+
+        <h3>Workout Schedule</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Workout</th>
+                    <th>Duration (mins)</th>
+                </tr>
+            </thead>
+            <tbody id="workout-schedule"></tbody>
+        </table>
+    </section>
+</main>
+
+<script>
+    function showSection(section) {
+        document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
+        document.getElementById(section).style.display = 'block';
+    }
+
+    function calculateBMI() {
+        let weight = document.getElementById("weight").value;
+        let feet = document.getElementById("feet").value;
+        let inches = document.getElementById("inches").value;
+
+        if (!weight || !feet || !inches) { alert("Enter weight and height!"); return; }
+
+        let heightMeters = ((parseInt(feet) * 12) + parseInt(inches)) * 0.0254;
+        let bmi = (weight / (heightMeters * heightMeters)).toFixed(2);
+        let status = "";
+
+        if (bmi < 18.5) { status = "Underweight (Skinny)"; }
+        else if (bmi < 24.9) { status = "Normal"; }
+        else if (bmi < 29.9) { status = "Overweight"; }
+        else { status = "Obese (Fat)"; }
+
+        document.getElementById("bmi-result").innerText = `Your BMI is ${bmi} - ${status}`;
+    }
+
+    function addWorkoutToPlan() {
+        let day = document.getElementById("day").value;
+        let exercise = document.getElementById("exercise").value;
+
+        if (!exercise) { alert("Enter an exercise!"); return; }
+
+        let table = document.getElementById("workoutPlanTable");
+        table.innerHTML += `<tr><td>${day}</td><td>${exercise}</td></tr>`;
+    }
+
+    function addWorkoutToPlanner() {
+        let date = document.getElementById("workout-date").value;
+        let workout = document.getElementById("workout-name").value;
+        let duration = document.getElementById("workout-duration").value;
+
+        if (!date || !workout || !duration) { alert("Fill all fields!"); return; }
+
+        let table = document.getElementById("workout-schedule");
+        table.innerHTML += `<tr><td>${date}</td><td>${workout}</td><td>${duration} mins</td></tr>`;
+    }
+
+    function resetWorkoutPlan() {
+        let table = document.getElementById("workoutPlanTable");
+        table.innerHTML = "";  // Clear the workout plan table
+    }
+
+    function resetWorkoutPlanner() {
+        let table = document.getElementById("workout-schedule");
+        table.innerHTML = "";  // Clear the workout planner table
+    }
+</script>
+
+</body>
+</html>
